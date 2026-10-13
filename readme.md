@@ -145,15 +145,21 @@ be reconciled either.
 
 ## Client configuration
 
-Claude Code, sandbox:
+Homebrew installs both binaries in `/opt/homebrew/bin`, and the shell script in
+`~/.cargo/bin`; `which flute2 flute2-mcp` prints the paths to use below.
+
+Claude Code, sandbox. The single-quoted `${…}` references are stored as written
+and filled in from Claude Code's own environment when it starts the server, so
+the secret stays out of the config file; with the variables unset there, put the
+values in directly:
 
 ```sh
 claude mcp add --scope user flute2 \
   -e FLUTE2_PROFILE=sandbox \
-  -e FLUTE2_BIN=/absolute/path/to/flute2 \
-  -e FLUTE2_CLIENT_ID=… \
-  -e FLUTE2_CLIENT_SECRET=… \
-  -- /absolute/path/to/flute2-mcp
+  -e FLUTE2_BIN=/opt/homebrew/bin/flute2 \
+  -e 'FLUTE2_CLIENT_ID=${FLUTE2_CLIENT_ID}' \
+  -e 'FLUTE2_CLIENT_SECRET=${FLUTE2_CLIENT_SECRET}' \
+  -- /opt/homebrew/bin/flute2-mcp
 ```
 
 Claude Desktop, sandbox:
