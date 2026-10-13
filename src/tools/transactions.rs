@@ -76,7 +76,7 @@ pub struct TransactionsList {
     pub page_index: Option<u32>,
     /// Items per page, 1–100.
     #[schemars(range(min = 1, max = 100))]
-    #[serde(default, deserialize_with = "crate::tools::de_flexible_u32")]
+    #[serde(default, deserialize_with = "crate::tools::de_page_size")]
     pub page_size: Option<u32>,
     /// Walk every page. Cannot be combined with `page_index`, and the response
     /// it returns carries no `meta.page_info`, so the per-page counts are absent.
@@ -396,8 +396,8 @@ pub struct TransactionCredit {
     #[serde(default)]
     pub payment_method_id: Option<String>,
     /// Which container `payment_method_id` belongs in: `card` or `ach`. A
-    /// credit carries no field for a stored card, so `card` here answers a
-    /// 400.
+    /// credit carries no field for a stored card, so `card` here is refused
+    /// with `kind: "client"` before any request.
     #[serde(default)]
     pub instrument: Option<String>,
     /// Bank account number, e.g. `1234567890`. Send it with

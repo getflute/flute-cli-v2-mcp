@@ -28,6 +28,18 @@ fn page_fields_reject_non_numeric_strings() {
     assert!(r.is_err(), "a non-numeric string must still be rejected");
 }
 
+#[test]
+fn page_size_outside_one_to_a_hundred_is_refused() {
+    for bad in [json!(0), json!(101), json!("0")] {
+        let r = serde_json::from_value::<CustomersList>(json!({ "page_size": bad }));
+        assert!(r.is_err(), "page_size {bad} must be refused");
+    }
+    for ok in [1, 100] {
+        let p: CustomersList = serde_json::from_value(json!({ "page_size": ok })).unwrap();
+        assert_eq!(p.page_size, Some(ok));
+    }
+}
+
 /// A dropped address field can silently remove AVS coverage, so an unknown
 /// field is an error rather than a no-op.
 #[test]

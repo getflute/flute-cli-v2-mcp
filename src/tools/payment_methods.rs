@@ -16,7 +16,7 @@ pub struct PaymentMethodsList {
     pub page_index: Option<u32>,
     /// Items per page, 1–100.
     #[schemars(range(min = 1, max = 100))]
-    #[serde(default, deserialize_with = "crate::tools::de_flexible_u32")]
+    #[serde(default, deserialize_with = "crate::tools::de_page_size")]
     pub page_size: Option<u32>,
     /// Walk every page. Cannot be combined with `page_index`, and the response
     /// it returns carries no `meta.page_info`, so the per-page counts are absent.

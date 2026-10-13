@@ -17,6 +17,20 @@ pub mod terminals;
 pub mod transactions;
 pub mod util;
 
+/// `de_flexible_u32` for `page_size`, refusing a value outside 1–100 so a call
+/// that breaks the schema's range is refused before the CLI runs.
+pub fn de_page_size<'de, D>(deserializer: D) -> Result<Option<u32>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    match de_flexible_u32(deserializer)? {
+        Some(n) if !(1..=100).contains(&n) => Err(serde::de::Error::custom(format!(
+            "page_size must be between 1 and 100 (got {n})"
+        ))),
+        v => Ok(v),
+    }
+}
+
 /// Deserialize an optional `u32` that may arrive as a JSON number **or** a
 /// numeric string. MCP clients routinely send integers quoted; without this,
 /// serde rejects them with `invalid type: string "..", expected u32`, which
