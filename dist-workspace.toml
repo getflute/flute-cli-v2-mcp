@@ -1,0 +1,42 @@
+# `.github/workflows/release.yml` is generated, never hand-written: run
+# `dist init` to confirm these settings and `dist generate` to write it. A
+# hand-edited release.yml fails `dist plan`'s own self-consistency check in CI.
+
+[workspace]
+members = ["cargo:."]
+
+[dist]
+cargo-dist-version = "0.31.0"
+ci = "github"
+installers = ["shell", "powershell", "homebrew"]
+targets = [
+  "aarch64-apple-darwin",
+  "x86_64-pc-windows-msvc",
+  "x86_64-unknown-linux-gnu",
+]
+install-path = "CARGO_HOME"
+hosting = "github"
+
+# This server carries no updater of its own, and one installed beside it would
+# update a binary the operator pins by absolute path in a client config.
+install-updater = false
+pr-run-mode = "skip"
+allow-dirty = []
+
+# The tap cargo-dist pushes the formula to on every release. Without these two
+# keys the formula is only attached to the release page, and
+# `brew install getflute/flute-cli-v2-mcp/flute2-mcp` fails at tap time. The publish
+# job authenticates to the tap with the HOMEBREW_TAP_TOKEN secret.
+tap = "getflute/homebrew-flute-cli-v2-mcp"
+publish-jobs = ["homebrew"]
+
+# No `[dist.dependencies.apt]` block: the `flute2` CLI needs libdbus for its
+# keyring, and this server has no keyring and links nothing native.
+
+# Every action the generated workflow uses is pinned to a commit rather than a
+# tag, so a moved tag cannot change what a release runs. The comment beside
+# each hash names the release it was resolved from. Same pins as flute-cli-v2.
+[dist.github-action-commits]
+"actions/checkout" = "d23441a48e516b6c34aea4fa41551a30e30af803"          # v6.1.0
+"actions/upload-artifact" = "b7c566a772e6b6bfb58ed0dc250532a479d7789f"   # v6.0.0
+"actions/download-artifact" = "37930b1c2abaa49bbe596cd826c3c89aef350131" # v7.0.0
