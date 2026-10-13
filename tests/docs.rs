@@ -212,7 +212,7 @@ fn every_client_config_block_sets_the_credential_variables() {
         .filter(|(i, _)| i % 2 == 1)
         .map(|(_, b)| b)
         .collect();
-    assert_eq!(blocks.len(), 4, "expected four client-configuration blocks");
+    assert_eq!(blocks.len(), 5, "expected five client-configuration blocks");
     for block in blocks {
         assert!(
             block.contains("FLUTE2_CLIENT_ID") && block.contains("FLUTE2_CLIENT_SECRET"),
