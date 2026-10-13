@@ -38,6 +38,9 @@ curl --proto '=https' --tlsv1.2 -LsSf https://github.com/getflute/flute-cli-v2-m
 powershell -ExecutionPolicy Bypass -c "irm https://github.com/getflute/flute-cli-v2-mcp/releases/latest/download/flute2-mcp-installer.ps1 | iex"
 ```
 
+The shell script installs into `~/.cargo/bin` and adds it to your shell
+profile; open a new terminal, or run `source ~/.cargo/env`, before using it.
+
 **From source**
 
 ```sh
@@ -54,7 +57,8 @@ it on `PATH`, or name it with `FLUTE2_BIN`.
 FLUTE2_PROFILE=sandbox flute2-mcp
 ```
 
-The server speaks MCP on stdin and stdout; logs go to stderr. A configuration
+`flute2-mcp --version` prints the installed version. The server speaks MCP on
+stdin and stdout; logs go to stderr. A configuration
 error exits `2` with one stderr line before any request is served.
 
 ## Environment variables
@@ -140,6 +144,23 @@ before re-issuing — except `api_keys_create`, whose reconcile is
 be reconciled either.
 
 ## Client configuration
+
+Homebrew installs both binaries in `/opt/homebrew/bin`, and the shell script in
+`~/.cargo/bin`; `which flute2 flute2-mcp` prints the paths to use below.
+
+Claude Code, sandbox. The single-quoted `${…}` references are stored as written
+and filled in from Claude Code's own environment when it starts the server, so
+the secret stays out of the config file; with the variables unset there, put the
+values in directly:
+
+```sh
+claude mcp add --scope user flute2 \
+  -e FLUTE2_PROFILE=sandbox \
+  -e FLUTE2_BIN=/opt/homebrew/bin/flute2 \
+  -e 'FLUTE2_CLIENT_ID=${FLUTE2_CLIENT_ID}' \
+  -e 'FLUTE2_CLIENT_SECRET=${FLUTE2_CLIENT_SECRET}' \
+  -- /opt/homebrew/bin/flute2-mcp
+```
 
 Claude Desktop, sandbox:
 
